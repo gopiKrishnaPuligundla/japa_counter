@@ -9,13 +9,18 @@ class CounterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Counter counter = context.select((CounterBloc bloc) => bloc.state.counter);
-    int liveRounds = counter.liveRounds;
-    int liveCount = counter.liveCount;
+    print("COMING HERE");
 
-    return Text(
-            '$liveRounds x $liveCount',
-            style: Theme.of(context).textTheme.headline4,
+    return BlocBuilder<CounterBloc, CounterState>(
+      builder: (context, state) {
+        return Text(
+          '${state.counter.liveRounds} x ${state.counter.liveCount}',
+          style: Theme
+              .of(context)
+              .textTheme
+              .headline4,
+        );
+      },
     );
   }
 }

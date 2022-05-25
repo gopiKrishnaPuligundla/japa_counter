@@ -16,11 +16,14 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     on<DecrementCounter>(decrement);
   }
 
-  void increment(IncrementCounter event,Emitter<CounterState> emit) {
+  void increment(IncrementCounter event, Emitter<CounterState> emit) {
+    print("increment");
     state.counter.incrementCount();
+    emit(CounterState(counter:Counter(liveCount:state.counter.liveCount,liveRounds: state.counter.liveRounds)));
   }
   void decrement(DecrementCounter event, Emitter<CounterState> emit) {
+    print("decrement");
     state.counter.decrementCount();
-    //no need to emit new state , in here better to use cubit
+    emit(CounterState(counter:Counter(liveCount:state.counter.liveCount,liveRounds: state.counter.liveRounds)));
   }
 }

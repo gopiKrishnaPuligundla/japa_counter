@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 
 
@@ -20,6 +22,7 @@ class Counter extends Equatable {
     _liveCount
   ];
   void incrementCount() {
+    log('livecount: $_liveCount \n liveRounds: $_liveRounds');
     _liveCount++;
     if(_liveCount == maxCount) {
       //TODO: vibrate for small time
@@ -35,6 +38,7 @@ class Counter extends Equatable {
     }
   }
   void decrementCount() {
+    log('livecount: $_liveCount \n liveRounds: $_liveRounds');
     if(_liveCount > 0) {
       _liveCount--;
       //TODO: delete last row from database
