@@ -17,13 +17,17 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
   }
 
   void increment(IncrementCounter event, Emitter<CounterState> emit) {
-    print("increment");
-    state.counter.incrementCount();
-    emit(CounterState(counter:Counter(liveCount:state.counter.liveCount,liveRounds: state.counter.liveRounds)));
+    // print("increment");
+    // state.counter.incrementCount();
+    emit(CounterState(counter:Counter(liveCount:state.counter.liveCount + 1,
+        liveRounds: state.counter.liveRounds)));
   }
   void decrement(DecrementCounter event, Emitter<CounterState> emit) {
-    print("decrement");
-    state.counter.decrementCount();
-    emit(CounterState(counter:Counter(liveCount:state.counter.liveCount,liveRounds: state.counter.liveRounds)));
+    // print("decrement");
+    //state.counter.decrementCount();
+    if (state.counter.liveCount > 0) {
+      emit(CounterState(counter: Counter(liveCount: state.counter.liveCount - 1,
+          liveRounds: state.counter.liveRounds)));
+    }
   }
 }

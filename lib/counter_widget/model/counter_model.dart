@@ -11,6 +11,18 @@ class Counter extends Equatable {
   Counter({required liveCount, required liveRounds}) {
     _liveCount  = liveCount;
     _liveRounds = liveRounds;
+    if(_liveCount == maxCount) {
+      //TODO: vibrate for small time
+      //TODO: add to shared preference
+      //TODO: add to database
+      _liveRounds++;
+      _liveCount = 0;
+    }
+    if(_liveRounds == maxRounds) {
+      //TODO: vibrate for more time
+      //TODO: update database
+      //TODO: update shared preferences
+    }
   }
 
   int get liveCount => _liveCount;
