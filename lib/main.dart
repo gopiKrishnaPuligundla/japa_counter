@@ -5,7 +5,6 @@ import 'package:japa_counter/counter_widget/counter_widget.dart';
 import 'package:japa_counter/quotes_screen.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 import 'counter_observer.dart';
-import 'counter_widget/model/counter_model.dart';
 import 'counter_form.dart';
 import 'counter_widget/bloc/counter_bloc.dart';
 
@@ -41,16 +40,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Japa Counter',
-      theme: ThemeData(
+    return MaterialApp.router(
+        routeInformationProvider: _router.routeInformationProvider,
+        routeInformationParser: _router.routeInformationParser,
+        routerDelegate: _router.routerDelegate,
+        debugShowCheckedModeBanner: false,
+        title: 'Japa Counter',
+        theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: MaterialApp.router(
-          routeInformationProvider: _router.routeInformationProvider,
-          routeInformationParser: _router.routeInformationParser,
-          routerDelegate: _router.routerDelegate),
     );
   }
 }
