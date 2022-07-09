@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:japa_counter/counter_widget/counter_widget.dart';
+import 'package:japa_counter/quotes_screen.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 import 'counter_observer.dart';
 import 'counter_widget/model/counter_model.dart';
@@ -14,13 +16,27 @@ void main() async {
   // Initialize SharedPrefs instance.
   await SharedPrefs.init();
   BlocOverrides.runZoned(
-    () => runApp(const MyApp()),
+    () => runApp(MyApp()),
     blocObserver: CounterObserver(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final _router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const CounterPage(),
+      ),
+      GoRoute(
+        path: '/quotes',
+        builder: (context, state) => const QuotesScreen(),
+      ),
+    ],
+    initialLocation: '/',
+  );
 
   // This widget is the root of your application.
   @override
@@ -29,9 +45,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Japa Counter',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
-      home: const CounterPage(),
+      home: MaterialApp.router(
+          routeInformationProvider: _router.routeInformationProvider,
+          routeInformationParser: _router.routeInformationParser,
+          routerDelegate: _router.routerDelegate),
     );
   }
 }
@@ -42,6 +61,8 @@ class CounterPage extends StatefulWidget {
   @override
   State<CounterPage> createState() => _CounterPageState();
 }
+
+enum Menu {ResetBeads, ResetRounds, ResetBoth}
 
 class _CounterPageState extends State<CounterPage> {
   @override
@@ -56,7 +77,6 @@ class _CounterPageState extends State<CounterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-
                   InkWell(onTap: () => _showAboutUs(context),
                     child: const ListTile(
                       leading: Icon(Icons.home),
@@ -73,24 +93,28 @@ class _CounterPageState extends State<CounterPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  /*ListTile(
-                    leading: Icon(Icons.home),
-                    title: Text('About Us',
-                      style: const TextStyle(fontWeight: FontWeight.bold),),),
-                  ListTile(
-                    leading: Icon(Icons.home),
-                    title: Text('About Us',
-                      style: const TextStyle(fontWeight: FontWeight.bold),),),*/
+                  InkWell( onTap: () => GoRouter.of(context).go('/quotes'),
+                    child: const ListTile(leading: Icon(Icons.info_outline),
+                      title: Text(
+                        'Prabhupada Quotes',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             appBar: AppBar(
-              actions: [
+              /*actions: [
+                PopupMenuButton<Menu>(onSelected: (Menu item) {
+                  context.read<CounterBloc>().add(ResetBeads());
+                },
+                    itemBuilder: itemBuilder),
                 IconButton(
                   icon: const Icon(Icons.more_vert),
                   onPressed: () => {},
                 ),
-              ],
+              ],*/
               bottom: const TabBar(
                 tabs: [
                   Tab(
@@ -110,6 +134,7 @@ class _CounterPageState extends State<CounterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       FloatingActionButton(
+                        heroTag: const ValueKey("1"),
                         onPressed: () =>
                             context.read<CounterBloc>().add(IncrementCounter()),
                         tooltip: 'Increment',
@@ -117,6 +142,7 @@ class _CounterPageState extends State<CounterPage> {
                       ),
                       const SizedBox(width: 60.0, child: Divider()),
                       FloatingActionButton(
+                        heroTag: const ValueKey("2"),
                         onPressed: () =>
                             context.read<CounterBloc>().add(DecrementCounter()),
                         tooltip: 'Decrement',
@@ -143,5 +169,7 @@ class _CounterPageState extends State<CounterPage> {
           );
         },);
   }
+
+  goToQuotesScreen() {}
 }
 
