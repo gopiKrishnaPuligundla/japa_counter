@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'counter_widget/model/counter_model.dart';
-import 'counter_widget/bloc/counter_bloc.dart';
 
 class ResetForm extends StatefulWidget {
   const ResetForm({Key? key}) : super(key: key);
@@ -82,7 +78,8 @@ class _ResetFormState extends State<ResetForm> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')),
                       );
-                      context.read<CounterBloc>().add(ResetCounter());
+                      countCtl.value = const TextEditingValue(text:"108");
+                      roundsCtl.value = const TextEditingValue(text:"16");
                     }
                   },
                   child: const Text('Reset'),

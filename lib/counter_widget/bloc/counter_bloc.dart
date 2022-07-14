@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
@@ -22,10 +20,20 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     Counter.maxRounds = SharedPrefs.instance.getInt('maxRounds') ?? 16;
     on<IncrementCounter>(increment);
     on<DecrementCounter>(decrement);
-    on<ResetCounter>(reset);
+    on<ResetCounters>(reset);
+    on<ResetBeads>(resetBeads);
+    on<ResetRounds>(resetRounds);
   }
-  void reset(ResetCounter event, Emitter<CounterState> emit) {
+  void reset(ResetCounters event, Emitter<CounterState> emit) {
     emit(CounterState(counter:Counter(liveCount: 0, liveRounds: 0)));
+  }
+
+  void resetBeads(ResetBeads event, Emitter<CounterState> emit) {
+    emit(CounterState(counter:Counter(liveCount: 0, liveRounds: state.counter.liveRounds)));
+  }
+
+  void resetRounds(ResetRounds event, Emitter<CounterState> emit) {
+    emit(CounterState(counter:Counter(liveCount: state.counter.liveCount, liveRounds: 0)));
   }
 
   void increment(IncrementCounter event, Emitter<CounterState> emit) {
@@ -34,6 +42,7 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     emit(CounterState(counter:Counter(liveCount:state.counter.liveCount + 1,
         liveRounds: state.counter.liveRounds)));
   }
+
   void decrement(DecrementCounter event, Emitter<CounterState> emit) {
     print("decrement");
     //state.counter.decrementCount();

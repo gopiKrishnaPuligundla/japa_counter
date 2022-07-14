@@ -9,4 +9,6 @@ abstract class CounterEvent extends Equatable{
 }
 class IncrementCounter extends CounterEvent {}
 class DecrementCounter extends CounterEvent {}
-class ResetCounter  extends CounterEvent {}
+class ResetCounters  extends CounterEvent {}
+class ResetBeads extends CounterEvent {}
+class ResetRounds extends CounterEvent {}

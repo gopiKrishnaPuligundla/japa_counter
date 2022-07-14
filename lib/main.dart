@@ -7,6 +7,7 @@ import 'package:japa_counter/utils/shared_prefs.dart';
 import 'counter_observer.dart';
 import 'counter_form.dart';
 import 'counter_widget/bloc/counter_bloc.dart';
+// import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   // Required for async calls in `main`
@@ -27,13 +28,32 @@ class MyApp extends StatelessWidget {
     routes: [
       GoRoute(
         path: '/',
+        /*pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const CounterPage(),
+        ),*/
         builder: (context, state) => const CounterPage(),
-      ),
-      GoRoute(
-        path: '/quotes',
-        builder: (context, state) => const QuotesScreen(),
+        //),
+        routes: [
+          GoRoute(
+            path: 'quotes',
+            /*pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const QuotesScreen(),
+            ),*/
+            builder: (context, state) => const QuotesScreen(),
+          ),
+        ],
       ),
     ],
+    errorPageBuilder: (context, state) => MaterialPage(
+        key: state.pageKey,
+        child: Scaffold(
+            body: Center(
+          child: Text(
+            state.error.toString(),
+          ),
+        ))),
     initialLocation: '/',
   );
 
@@ -41,12 +61,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-        routeInformationProvider: _router.routeInformationProvider,
-        routeInformationParser: _router.routeInformationParser,
-        routerDelegate: _router.routerDelegate,
-        debugShowCheckedModeBanner: false,
-        title: 'Japa Counter',
-        theme: ThemeData(
+      routeInformationProvider: _router.routeInformationProvider,
+      routeInformationParser: _router.routeInformationParser,
+      routerDelegate: _router.routerDelegate,
+      debugShowCheckedModeBanner: false,
+      title: 'Japa Counter',
+      theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
     );
@@ -60,7 +80,7 @@ class CounterPage extends StatefulWidget {
   State<CounterPage> createState() => _CounterPageState();
 }
 
-enum Menu {ResetBeads, ResetRounds, ResetBoth}
+enum Menu { resetBeads, resetRounds, resetBoth }
 
 class _CounterPageState extends State<CounterPage> {
   @override
@@ -75,7 +95,8 @@ class _CounterPageState extends State<CounterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  InkWell(onTap: () => _showAboutUs(context),
+                  InkWell(
+                    onTap: () => _showAboutUs(context),
                     child: const ListTile(
                       leading: Icon(Icons.home),
                       title: Text(
@@ -91,8 +112,10 @@ class _CounterPageState extends State<CounterPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  InkWell( onTap: () => GoRouter.of(context).go('/quotes'),
-                    child: const ListTile(leading: Icon(Icons.info_outline),
+                  InkWell(
+                    onTap: () => GoRouter.of(context).go('/quotes'),
+                    child: const ListTile(
+                      leading: Icon(Icons.info_outline),
                       title: Text(
                         'Prabhupada Quotes',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -103,16 +126,36 @@ class _CounterPageState extends State<CounterPage> {
               ),
             ),
             appBar: AppBar(
-              /*actions: [
+              actions: [
                 PopupMenuButton<Menu>(onSelected: (Menu item) {
-                  context.read<CounterBloc>().add(ResetBeads());
-                },
-                    itemBuilder: itemBuilder),
-                IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () => {},
-                ),
-              ],*/
+                  switch (item) {
+                    case Menu.resetBeads:
+                      context.read<CounterBloc>().add(ResetBeads());
+                      break;
+                    case Menu.resetRounds:
+                      context.read<CounterBloc>().add(ResetRounds());
+                      break;
+                    case Menu.resetBoth:
+                      context.read<CounterBloc>().add(ResetCounters());
+                      break;
+                  }
+                }, itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem(
+                      value: Menu.resetBeads,
+                      child: Text('ResetBeads'),
+                    ),
+                    const PopupMenuItem(
+                      value: Menu.resetRounds,
+                      child: Text('ResetRounds'),
+                    ),
+                    const PopupMenuItem(
+                      value: Menu.resetBoth,
+                      child: Text('ResetBoth'),
+                    ),
+                  ];
+                }),
+              ],
               bottom: const TabBar(
                 tabs: [
                   Tab(
@@ -161,13 +204,13 @@ class _CounterPageState extends State<CounterPage> {
   }
 
   void _showAboutUs(BuildContext context) async {
-    await showDialog(context: context,
-        builder: (BuildContext context) {
-          return const AlertDialog(title: Text("ISL collaboration"),
-          );
-        },);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          title: Text("ISL collaboration"),
+        );
+      },
+    );
   }
-
-  goToQuotesScreen() {}
 }
-
