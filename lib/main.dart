@@ -2,21 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:japa_counter/counter_widget/counter_widget.dart';
+import 'package:japa_counter/quote_form.dart';
 import 'package:japa_counter/quotes_screen.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'PersonForm.dart';
 import 'counter_observer.dart';
 import 'counter_form.dart';
 import 'counter_widget/bloc/counter_bloc.dart';
-// import 'package:flutter/foundation.dart' show kIsWeb;
+import 'helper/object_box.dart';
 
+// import 'package:flutter/foundation.dart' show kIsWeb;
+// final
+// final objectBoxProvider = Provider<ObjectBox>((ref) => ObjectBox.init());
+//final myProvider = Provider<String>((_) => "Hi");
+final objectBoxProvider = FutureProvider<ObjectBox>((ref) async {
+    return await ObjectBox.init();
+});
+//final quotesAllProvider = StateNotifierProvider<AsyncValue<List<Quote>>>((ref) async {
+final OBNProvider = ChangeNotifierProvider<ObjectBoxNotifier>((ref) {
+    ObjectBox? ob = ref.read(objectBoxProvider).value;
+    //return ob?.getAllQuotes();
+    return ObjectBoxNotifier(objectBox: ob);
+} );
 void main() async {
   // Required for async calls in `main`
-  WidgetsFlutterBinding.ensureInitialized();
 
+  WidgetsFlutterBinding.ensureInitialized();
+  // objectBox = await ObjectBox.init();
   // Initialize SharedPrefs instance.
   await SharedPrefs.init();
   BlocOverrides.runZoned(
-    () => runApp(MyApp()),
+    () => runApp(ProviderScope(child: MyApp())),
+    // () => runApp(MyApp()),
     blocObserver: CounterObserver(),
   );
 }
@@ -42,6 +60,22 @@ class MyApp extends StatelessWidget {
               child: const QuotesScreen(),
             ),*/
             builder: (context, state) => const QuotesScreen(),
+          ),
+          GoRoute(
+            path: 'quotes_form',
+            /*pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const QuotesScreen(),
+            ),*/
+            builder: (context, state) => const QuoteForm(),
+          ),
+          GoRoute(
+            path: 'person_form',
+            /*pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const QuotesScreen(),
+            ),*/
+            builder: (context, state) => const PersonForm(),
           ),
         ],
       ),
@@ -118,6 +152,16 @@ class _CounterPageState extends State<CounterPage> {
                       leading: Icon(Icons.info_outline),
                       title: Text(
                         'Prabhupada Quotes',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => GoRouter.of(context).go('/quotes_form'),
+                    child: const ListTile(
+                      leading: Icon(Icons.info_outline),
+                      title: Text(
+                        'Add Quotes',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
