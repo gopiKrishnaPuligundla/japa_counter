@@ -54,22 +54,25 @@ class CustomQuotes extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final AsyncValue List<Quote> quotes = ref.watch(objectBoxProvider);
-    final ObjectBoxNotifier obn = ref.watch(OBNProvider);
-    List<Quote>? quotes = obn.getAllQuotes();
+    ObjectBox objectBox = ref.watch(objectBoxProvider);
+    List<Quote> quotes = objectBox.getAllQuotes();
     debugPrint("quotes : ($quotes.length)");
     return ListView.builder(
-        itemCount: quotes?.length,
-        itemBuilder:(BuildContext context, int index) {
-                return Dismissible(
-                  key: UniqueKey(),
-                  child:Text(quotes != null ? quotes[index].quoteStr: 'Error'),
-                  onDismissed: (direction) {
-                    //quotes[index] ? objectBoxNotifier.removeQuote(quotes[index].id): null;
-                  },
-                );
-              },
+      itemCount: quotes.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Dismissible(
+          key: UniqueKey(),
+          child: Text(quotes != null ? quotes[index].quoteStr : 'Error'),
+          // child:Text(quotes != null ? quotes[index]: 'Error'),
+          onDismissed: (direction) {
+            quotes[index] != null ? objectBox.deleteQuote(quotes[index].id): null;
+          },
+        );
+      },
     );
+    // final AsyncValue List<Quote> quotes = ref.watch(objectBoxProvider);
+    // final ObjectBoxNotifier obn = ref.watch(OBNProvider);
+    // List<Quote>? quotes = obn.getAllQuotes();
+    // var quotes = ["HareKrishna", "HareRama"];
   }
 }
-

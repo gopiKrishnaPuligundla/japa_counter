@@ -24,7 +24,7 @@ class ObjectBox {
 
   bool deleteQuote(int id) => _quoteBox.remove(id);
 
-  List<Quote> getAllQuotes() => _quoteBox.getAll();
+  List<Quote> getAllQuotes() => _quoteBox.getAll().toList();
 
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:japa_counter/counter_widget/counter_widget.dart';
 import 'package:japa_counter/quote_form.dart';
+import 'package:japa_counter/quotes_feature/quotes_model.dart';
 import 'package:japa_counter/quotes_screen.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,27 +14,38 @@ import 'counter_widget/bloc/counter_bloc.dart';
 import 'helper/object_box.dart';
 
 // import 'package:flutter/foundation.dart' show kIsWeb;
-// final
-// final objectBoxProvider = Provider<ObjectBox>((ref) => ObjectBox.init());
-//final myProvider = Provider<String>((_) => "Hi");
-final objectBoxProvider = FutureProvider<ObjectBox>((ref) async {
-    return await ObjectBox.init();
+final objectBoxProvider = Provider<ObjectBox>((ref) => throw UnimplementedError());
+/*final objectBoxProvider = FutureProvider<ObjectBox>((ref)  {
+    print("objectBoxProvider");
+    return ObjectBox.init();
 });
+
 //final quotesAllProvider = StateNotifierProvider<AsyncValue<List<Quote>>>((ref) async {
 final OBNProvider = ChangeNotifierProvider<ObjectBoxNotifier>((ref) {
     ObjectBox? ob = ref.read(objectBoxProvider).value;
+
+    print("Hello");
+    print("ob: $ob");
     //return ob?.getAllQuotes();
     return ObjectBoxNotifier(objectBox: ob);
-} );
-void main() async {
-  // Required for async calls in `main`
+} );*/
 
+// ObjectBox? objectBox ;
+void main() async {
+
+  // Required for async calls in `main`
+  //objectBox = await ObjectBox.init();
   WidgetsFlutterBinding.ensureInitialized();
-  // objectBox = await ObjectBox.init();
+  ObjectBox objectBox = await ObjectBox.init();
   // Initialize SharedPrefs instance.
   await SharedPrefs.init();
   BlocOverrides.runZoned(
-    () => runApp(ProviderScope(child: MyApp())),
+    () => runApp(
+        ProviderScope(
+            overrides: [objectBoxProvider.overrideWithValue(objectBox)],
+        child: MyApp()
+    ),
+    ),
     // () => runApp(MyApp()),
     blocObserver: CounterObserver(),
   );
@@ -256,5 +268,15 @@ class _CounterPageState extends State<CounterPage> {
         );
       },
     );
+  }
+}
+
+void show_obn_entries(ObjectBox objectBox) {
+  Quote elem;
+  var a = objectBox.getAllQuotes();
+  for (elem in a) {
+    debugPrint(
+        "quotes in db id" + elem.id.toString() + " " + elem.quoteStr + " " +
+            elem.name);
   }
 }

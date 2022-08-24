@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:japa_counter/main.dart';
 import 'package:japa_counter/quotes_feature/quotes_model.dart';
 
+import 'helper/object_box.dart';
+
 class QuoteForm extends ConsumerStatefulWidget {
   const QuoteForm({Key? key}) : super(key: key);
 
@@ -15,7 +17,7 @@ class QuoteForm extends ConsumerStatefulWidget {
 class _QuoteFormState extends ConsumerState<QuoteForm> {
   String dropDownValue = 'Prabhupada';
   final _formKey = GlobalKey<FormState>();
-  TextEditingController qutoesCtl = TextEditingController(text: '');
+  TextEditingController quotesCtl = TextEditingController(text: '');
   // TextEditingController countCtl = TextEditingController(text: '16');
 
   @override
@@ -63,7 +65,7 @@ class _QuoteFormState extends ConsumerState<QuoteForm> {
               height: 10.0,
             ),
             TextFormField(
-              // controller: roundsCtl,
+              controller: quotesCtl,
               //initialValue: "108",
               decoration: InputDecoration(
                   labelText: 'Quote',
@@ -88,8 +90,13 @@ class _QuoteFormState extends ConsumerState<QuoteForm> {
                           const SnackBar(content: Text('Processing Data')),
                         );
                       }
-                      quote = Quote(quoteStr: qutoesCtl.text, name: dropDownValue );
-                      ref.read(OBNProvider.notifier).addQuote(quote);
+                      quote = Quote(quoteStr: quotesCtl.text, name: dropDownValue);
+                      debugPrint("quote: ${quotesCtl.text}. name: $dropDownValue");
+                      //ref.read(OBNProvider.notifier).addQuote(quote);
+                      ObjectBox objectBox = ref.watch(objectBoxProvider);
+                      objectBox.insertQuote(quote);
+                      debugPrint("quote Added");
+                      //show_obn_entries(ref.read(OBNProvider).objectBox!);
                     },
                     child: const Text('Update'),
                   ),
