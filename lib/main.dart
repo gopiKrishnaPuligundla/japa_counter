@@ -5,8 +5,11 @@ import 'package:japa_counter/counter_widget/counter_widget.dart';
 import 'package:japa_counter/quote_form.dart';
 import 'package:japa_counter/quotes_feature/quotes_model.dart';
 import 'package:japa_counter/quotes_screen.dart';
+import 'package:japa_counter/rest_client.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
+
 import 'PersonForm.dart';
 import 'counter_observer.dart';
 import 'counter_form.dart';
@@ -35,6 +38,12 @@ void main() async {
 
   // Required for async calls in `main`
   //objectBox = await ObjectBox.init();
+  final dio = Dio();
+  final client = RestClient(dio);
+
+  client.getModels().then((it) => debugPrint("$it"));
+  //response = await dio.get();
+  
   WidgetsFlutterBinding.ensureInitialized();
   ObjectBox objectBox = await ObjectBox.init();
   // Initialize SharedPrefs instance.

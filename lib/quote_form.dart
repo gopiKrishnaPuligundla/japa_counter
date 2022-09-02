@@ -93,7 +93,7 @@ class _QuoteFormState extends ConsumerState<QuoteForm> {
                       quote = Quote(quoteStr: quotesCtl.text, name: dropDownValue);
                       debugPrint("quote: ${quotesCtl.text}. name: $dropDownValue");
                       //ref.read(OBNProvider.notifier).addQuote(quote);
-                      ObjectBox objectBox = ref.watch(objectBoxProvider);
+                      ObjectBox objectBox = ref.read(objectBoxProvider);
                       objectBox.insertQuote(quote);
                       debugPrint("quote Added");
                       //show_obn_entries(ref.read(OBNProvider).objectBox!);
