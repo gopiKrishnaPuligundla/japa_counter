@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:vibration/vibration.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 
 
@@ -15,14 +15,14 @@ class Counter extends Equatable {
 
     SharedPrefs.instance.setInt('liveCount', liveCount);
     if (liveCount == maxCount) {
-      Vibrate.feedback(FeedbackType.success);
+      Vibration.vibrate(duration: 500);
       //TODO: add to database
       liveRounds++;
       SharedPrefs.instance.setInt('liveRounds', liveRounds);
       liveCount = 0;
     }
     if (liveRounds == maxRounds) {
-      Vibrate.feedback(FeedbackType.heavy);
+      Vibration.vibrate(duration: 1000);
       liveRounds = 0;
       liveCount  = 0;
       SharedPrefs.instance.setInt('liveRounds', liveRounds);

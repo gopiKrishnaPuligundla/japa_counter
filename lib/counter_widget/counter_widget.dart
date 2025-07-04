@@ -18,7 +18,7 @@ class CounterWidget extends StatelessWidget {
           style: Theme
               .of(context)
               .textTheme
-              .headline4,
+              .headlineMedium,
         );
       },
     );
