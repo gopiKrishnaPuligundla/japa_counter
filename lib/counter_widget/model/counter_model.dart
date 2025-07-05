@@ -1,12 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:vibration/vibration.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
+import 'package:japa_counter/services/sankalpa_service.dart';
+import 'package:japa_counter/models/sankalpa_model.dart';
 
 
 class Counter extends Equatable {
   static int? maxCount = 108, maxRounds = 16;
   int liveCount = 0;
   int liveRounds = 0;
+  static final SankalpaService _sankalpaService = SankalpaService();
 
   // Counter({ required liveCount, required liveRounds }) {
   Counter({required this.liveCount, required this.liveRounds } ) {
@@ -20,6 +23,9 @@ class Counter extends Equatable {
       liveRounds++;
       SharedPrefs.instance.setInt('liveRounds', liveRounds);
       liveCount = 0;
+      
+      // Update sankalpa progress when a round is completed
+      _updateSankalpaProgress();
     }
     if (liveRounds == maxRounds) {
       Vibration.vibrate(duration: 1000);
@@ -28,6 +34,20 @@ class Counter extends Equatable {
       SharedPrefs.instance.setInt('liveRounds', liveRounds);
       SharedPrefs.instance.setInt('liveCount', liveCount);
       //TODO: update database
+    }
+  }
+
+  // Update sankalpa progress when rounds are completed
+  void _updateSankalpaProgress() async {
+    try {
+      final todaysSankalpas = await _sankalpaService.getTodaysActiveSankalpas();
+      
+      for (final sankalpa in todaysSankalpas) {
+        // Add 1 round to the sankalpa
+        await _sankalpaService.addProgress(sankalpa.id, 1);
+      }
+    } catch (e) {
+      print('Error updating sankalpa progress: $e');
     }
   }
 

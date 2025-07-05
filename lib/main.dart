@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:japa_counter/counter_widget/counter_widget.dart';
 import 'package:japa_counter/quotes_screen.dart';
 import 'package:japa_counter/vaishnav_calendar_screen.dart';
+import 'package:japa_counter/home_screen.dart';
 import 'package:japa_counter/utils/shared_prefs.dart';
 import 'package:volume_key_board/volume_key_board.dart';
 import 'counter_observer.dart';
@@ -83,7 +84,7 @@ class CounterPage extends StatefulWidget {
   State<CounterPage> createState() => _CounterPageState();
 }
 
-enum Menu { resetBeads, resetRounds, resetBoth }
+
 
 class _CounterPageState extends State<CounterPage> {
   @override
@@ -114,141 +115,9 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return BlocProvider<CounterBloc>(
       create: (_) => CounterBloc(),
-      child: Builder(
-        builder: (context) => DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            drawer: Drawer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () => _showAboutUs(context),
-                    child: const ListTile(
-                      leading: Icon(Icons.home),
-                      title: Text(
-                        'About Us',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  const ListTile(
-                    leading: Icon(Icons.phone),
-                    title: Text(
-                      'Contact',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => GoRouter.of(context).go('/quotes'),
-                    child: const ListTile(
-                      leading: Icon(Icons.info_outline),
-                      title: Text(
-                        'Prabhupada Quotes',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  const ListTile(
-                    leading: Icon(Icons.calendar_month),
-                    title: Text(
-                      'Vaishnav Calendar',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            appBar: AppBar(
-              actions: [
-                PopupMenuButton<Menu>(onSelected: (Menu item) {
-                  switch (item) {
-                    case Menu.resetBeads:
-                      context.read<CounterBloc>().add(ResetBeads());
-                      break;
-                    case Menu.resetRounds:
-                      context.read<CounterBloc>().add(ResetRounds());
-                      break;
-                    case Menu.resetBoth:
-                      context.read<CounterBloc>().add(ResetCounters());
-                      break;
-                  }
-                }, itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem(
-                      value: Menu.resetBeads,
-                      child: Text('ResetBeads'),
-                    ),
-                    const PopupMenuItem(
-                      value: Menu.resetRounds,
-                      child: Text('ResetRounds'),
-                    ),
-                    const PopupMenuItem(
-                      value: Menu.resetBoth,
-                      child: Text('ResetBoth'),
-                    ),
-                  ];
-                }),
-              ],
-              bottom: const TabBar(
-                tabs: [
-                  Tab(
-                    icon: Text("Counter"),
-                  ),
-                  Tab(
-                    icon: Text("Settings"),
-                  ),
-                  Tab(
-                    icon: Text("Calendar"),
-                  ),
-                ],
-              ),
-              title: const Text("Japa Counter"),
-            ),
-            body: TabBarView(
-              children: [
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      FloatingActionButton(
-                        heroTag: const ValueKey("1"),
-                        onPressed: () =>
-                            context.read<CounterBloc>().add(IncrementCounter()),
-                        tooltip: 'Increment',
-                        child: const Icon(Icons.add),
-                      ),
-                      const SizedBox(width: 60.0, child: Divider()),
-                      FloatingActionButton(
-                        heroTag: const ValueKey("2"),
-                        onPressed: () =>
-                            context.read<CounterBloc>().add(DecrementCounter()),
-                        tooltip: 'Decrement',
-                        child: const Icon(Icons.remove),
-                      ),
-                      const CounterWidget(),
-                    ],
-                  ),
-                ),
-                const ResetForm(),
-                const VaishnavCalendarScreen(),
-              ],
-            ),
-          ),
-        ),
-      ),
-// This trailing comma makes auto-formatting nicer for build methods.
+      child: const HomeScreen(),
     );
   }
 
-  void _showAboutUs(BuildContext context) async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text("ISL collaboration"),
-        );
-      },
-    );
-  }
+
 }
